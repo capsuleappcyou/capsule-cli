@@ -7,7 +7,7 @@ name: RELEASE
 
 jobs:
   build:
-    name: Upload Release Asset
+    name: Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
