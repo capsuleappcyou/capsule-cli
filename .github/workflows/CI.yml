@@ -29,6 +29,10 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
+      - name: Install docker on macos
+          if: matrix.os == 'macos-latest'
+          run: |
+            brew install docker
       - name: Checkout
         uses: actions/checkout@v2
       - name: Toolchain
