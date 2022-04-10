@@ -30,9 +30,9 @@ jobs:
 
     steps:
       - name: Install docker on macos
-          if: matrix.os == 'macos-latest'
-          run: |
-            brew install docker
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install docker
       - name: Checkout
         uses: actions/checkout@v2
       - name: Toolchain
