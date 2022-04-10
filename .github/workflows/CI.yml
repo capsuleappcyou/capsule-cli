@@ -11,8 +11,11 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  ci:
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
 
     services:
       postgres:
