@@ -31,6 +31,7 @@ jobs:
           tagRegexGroup: 1
       - name: Package assert
         run: |
+          ls target/release/
           cd target/release/
           tar -czvf capsule-cli-${{ matrix.os }}-${{ steps.tagName.outputs.tag }}.tar.gz capsule
       - name: Create Release
