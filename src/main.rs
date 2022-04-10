@@ -60,7 +60,7 @@ fn main() {
     let args: Cli = Cli::parse();
 
     let api = HttpCapsuleApi {
-        uri: "http://127.0.0.1:7892".to_string(),
+        uri: "https://api.capsuleapp.cyou".to_string(),
         timeout: Duration::from_secs(5),
     };
 
