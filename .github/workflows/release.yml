@@ -29,7 +29,7 @@ jobs:
         id: tagName
         with:
           tagRegexGroup: 1
-      - name: Package assert
+      - name: Package unix/linux assert
         if: matrix.os != 'windows-latest'
         run: |
           cd target/release/
