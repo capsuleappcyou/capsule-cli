@@ -23,10 +23,11 @@ jobs:
           command: clean
       - name: Build
         run: cargo build --release
-      - name: Zip
+      - name: Install zip
         uses: montudor/action-zip@v1
-        with:
-          args: zip -qq capsule-macos.zip target/release/capsule
+      - name: Zip output
+        run: zip -qq -r capsule-macos.zip capsule
+        working-directory: target/release/
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
