@@ -49,13 +49,21 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: true
           prerelease: true
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload to release
+        uses: svenstaro/upload-release-action@v1-release
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: target/release/capsule-cli-${{ matrix.os }}-${{ steps.tagName.outputs.tag }}.tar.gz
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/release/capsule-cli-${{ matrix.os }}-${{ steps.tagName.outputs.tag }}.tar.gz
           asset_name: capsule-cli-${{ matrix.os }}-${{ steps.tagName.outputs.tag }}.tar.gz
-          asset_content_type: application/x-tar
+          tag: ${{ github.ref }}
+
+#      - name: Upload Release Asset
+#        id: upload-release-asset
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: target/release/capsule-cli-${{ matrix.os }}-${{ steps.tagName.outputs.tag }}.tar.gz
+#          asset_name: capsule-cli-${{ matrix.os }}-${{ steps.tagName.outputs.tag }}.tar.gz
+#          asset_content_type: application/x-tar
