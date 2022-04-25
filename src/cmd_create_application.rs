@@ -26,6 +26,8 @@ impl From<git2::Error> for CliError {
 
 pub fn handle<P, A>(application_directory: P, application_name: Option<String>, api: &A) -> Result<ApplicationCreateResponse, CliError>
     where P: AsRef<Path>, A: CapsuleApi {
+    let create_response = api.create_application(application_name)?;
+
     if is_git_repository(&application_directory) {
         let repo = Repository::open(&application_directory)?;
 
@@ -33,11 +35,11 @@ pub fn handle<P, A>(application_directory: P, application_name: Option<String>, 
         let capsule_remote = remotes.iter().flatten().find(|it| { *it == "capsule" });
 
         if capsule_remote.is_none() {
-            repo.remote("capsule", "https://capsuleapp.cyou")?;
+            repo.remote("capsule", &create_response.git_repo)?;
         }
     }
 
-    api.create_application(application_name)
+    Ok(create_response)
 }
 
 fn is_git_repository<P: AsRef<Path>>(application_directory: P) -> bool {
