@@ -69,42 +69,49 @@ mod tests {
         let response = result.ok().unwrap();
         assert_eq!(response.name, "first_capsule_application");
         assert_eq!(response.url, "https://first-capsule-application.capsuleapp.cyou");
-        assert_eq!(response.git_repo, "https://git.capsuleapp.cyou/first-capsule-application.git");
+        assert_eq!(response.git_repo, "https://git.capsuleapp.cyou/first_capsule_user/first-capsule-application.git");
         assert_eq!(is_git_repository(application_directory), false);
     }
 
     #[test]
-    fn should_add_git_remote_if_application_directory_is_a_git_repository() {
+    fn should_create_application_if_application_directory_is_a_git_repository() {
         let application_directory = TempDir::new(".").unwrap();
 
-        let git_repo = Git::init(&application_directory).unwrap();
+        let _ = Git::init(&application_directory);
 
         let mock_api = mock_create_application_api();
 
         let result = handle(application_directory.path(), None, &mock_api);
-
-        let remotes = git_repo.remotes().unwrap();
-        let capsule_remote = remotes.iter().flatten().find(|it| { *it == "capsule" });
-
         assert_eq!(result.is_ok(), true);
 
         let response = result.ok().unwrap();
         assert_eq!(response.name, "first_capsule_application");
         assert_eq!(response.name, "first_capsule_application");
         assert_eq!(response.url, "https://first-capsule-application.capsuleapp.cyou");
-        assert_eq!(response.git_repo, "https://git.capsuleapp.cyou/first-capsule-application.git");
-
-        assert_eq!(is_git_repository(&application_directory), true);
-        assert_eq!(capsule_remote.is_some(), true);
-        assert_eq!(capsule_remote.unwrap(), "capsule");
+        assert_eq!(response.git_repo, "https://git.capsuleapp.cyou/first_capsule_user/first-capsule-application.git");
     }
 
     #[test]
-    fn should_ok_if_capsule_remote_present_in_git_repo() {
+    fn should_add_remote_git_repository_if_application_directory_is_a_git_repository() {
         let application_directory = TempDir::new(".").unwrap();
 
         let git_repo = Git::init(&application_directory).unwrap();
-        git_repo.remote("capsule", "https://git.capsuleapp.cyou/first_capsule_application")
+
+        let mock_api = mock_create_application_api();
+
+        let _ = handle(application_directory.path(), None, &mock_api);
+
+        let capsule_remote = git_repo.find_remote("capsule").unwrap();
+        assert_eq!(capsule_remote.name().unwrap(), "capsule");
+        assert_eq!(capsule_remote.url().unwrap(), "https://git.capsuleapp.cyou/first_capsule_user/first-capsule-application.git");
+    }
+
+    #[test]
+    fn should_create_application_if_git_remote_repository_was_present() {
+        let application_directory = TempDir::new(".").unwrap();
+
+        let git_repo = Git::init(&application_directory).unwrap();
+        git_repo.remote("capsule", "https://git.capsuleapp.cyou/first_capsule_user/first_capsule_application")
             .expect("could not add git remote");
 
         let mock_api = mock_create_application_api();
@@ -123,7 +130,7 @@ mod tests {
             .returning(|_| Ok(ApplicationCreateResponse {
                 name: "first_capsule_application".to_string(),
                 url: "https://first-capsule-application.capsuleapp.cyou".to_string(),
-                git_repo: "https://git.capsuleapp.cyou/first-capsule-application.git".to_string(),
+                git_repo: "https://git.capsuleapp.cyou/first_capsule_user/first-capsule-application.git".to_string(),
             }));
         mock_api
     }
