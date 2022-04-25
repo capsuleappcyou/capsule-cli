@@ -52,7 +52,7 @@ impl From<serde_json::Error> for CliError {
 impl CapsuleApi for HttpCapsuleApi {
     fn create_application(&self, name: Option<String>) -> Result<ApplicationCreateResponse, CliError> {
         let base_uri = &self.uri;
-        let uri_str = format!("{base_uri}/applications");
+        let uri_str = format!("{}/applications", base_uri);
 
         let mut response = Request::post(uri_str.as_str())
             .header("content-type", "application/json")
@@ -62,7 +62,7 @@ impl CapsuleApi for HttpCapsuleApi {
 
         if response.status() != StatusCode::CREATED {
             let status_code = response.status().as_u16();
-            return Err(CliError { message: format!("The server response status {status_code}.") });
+            return Err(CliError { message: format!("The server response status {}.", status_code) });
         }
 
         let api_response = response.json::<ApplicationCreateResponse>()?;
