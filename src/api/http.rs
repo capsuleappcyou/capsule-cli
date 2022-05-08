@@ -51,10 +51,10 @@ impl From<serde_json::Error> for CliError {
 
 impl CapsuleApi for HttpCapsuleApi {
     fn create_application(&self, name: Option<String>) -> Result<ApplicationCreateResponse, CliError> {
-        let base_uri = &self.uri;
-        let uri_str = format!("{}/applications", base_uri);
+        let host = &self.uri;
+        let uri = format!("{}/applications", host);
 
-        let mut response = Request::post(uri_str.as_str())
+        let mut response = Request::post(uri.as_str())
             .header("content-type", "application/json")
             .timeout(self.timeout)
             .body(serde_json::to_vec(&CreateApplicationRequest { name })?)?
